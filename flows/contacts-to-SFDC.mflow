@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="contacts-to-SFDC">
+    <global-element name="Salesforce" type="http://www.mulesoft.org/schema/mule/sfdc/config" entity-id="Salesforce#1">
+        <properties>
+            <property name="proxyUsername"/>
+            <property name="securityToken" value="7tmqvMeBmHQHJbkD6Hn47t8GQ"/>
+            <property name="proxyHost"/>
+            <property name="auxiliary;metauseMetaData" value="true"/>
+            <property name="allowFieldTruncationSupport"/>
+            <property name="assignmentRuleId"/>
+            <property name="proxyPort"/>
+            <property name="password" value="Salesforce#1"/>
+            <property name="batchSobjectMaxDepth"/>
+            <property name="clientId"/>
+            <property name="url"/>
+            <property name="username" value="spullak@gmail.com"/>
+            <property name="useDefaultRule"/>
+            <property name="sessionId"/>
+            <property name="serviceEndpoint"/>
+            <property name="name" value="Salesforce"/>
+            <property name="timeObjectStore-ref"/>
+            <property name="auxiliary;index" value="1"/>
+            <property name="proxyPassword"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/sfdc/connection-pooling-profile;0">
+                <property name="exhaustedAction" value="WHEN_EXHAUSTED_GROW"/>
+                <property name="auxiliary;index" value="2"/>
+                <property name="auxiliary;wrapIn" value="2"/>
+                <property name="initialisationPolicy" value="INITIALISE_ONE"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element name="DataMapper" type="http://www.mulesoft.org/schema/mule/ee/data-mapper/config" entity-id="DataMapper#1">
+        <properties>
+            <property name="name" value="datamapper_grf"/>
+            <property name="auxiliary;index" value="3"/>
+            <property name="transformationGraphPath" value="datamapper.grf"/>
+        </properties>
+    </global-element>
+    <global-element name="Salesforce" type="http://www.mulesoft.org/schema/mule/sfdc/config" entity-id="Salesforce#2">
+        <properties>
+            <property name="proxyUsername"/>
+            <property name="securityToken" value="${salesforce.securityToken}"/>
+            <property name="proxyHost"/>
+            <property name="auxiliary;metauseMetaData" value="true"/>
+            <property name="allowFieldTruncationSupport"/>
+            <property name="assignmentRuleId"/>
+            <property name="proxyPort"/>
+            <property name="password" value="${salesforce.password}"/>
+            <property name="batchSobjectMaxDepth"/>
+            <property name="clientId"/>
+            <property name="url"/>
+            <property name="username" value="${salesforce.username}"/>
+            <property name="useDefaultRule"/>
+            <property name="sessionId"/>
+            <property name="serviceEndpoint"/>
+            <property name="name" value="Salesforce1"/>
+            <property name="timeObjectStore-ref"/>
+            <property name="auxiliary;index" value="4"/>
+            <property name="proxyPassword"/>
+        </properties>
+    </global-element>
+    <flow SubFlow="false" name="Contacts_to_SFDC" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="6088e6de-08c2-474a-a3f2-819b0cd8ff39">
+        <properties>
+            <property name="initialState"/>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property name="auxiliary;index" value="5"/>
+        </properties>
+        <description>Upload a csv file of contact information into Salesforce as new contacts.</description>
+        <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#1">
+            <graphicalData x="0" y="0" width="0" height="0"/>
+            <endpoint direction="Inbound" name="File Input" type="http://www.mulesoft.org/schema/mule/file/endpoint" entity-id="File#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="reverseOrder"/>
+                    <property name="moveToPattern"/>
+                    <property name="pollingFrequency" value="10000"/>
+                    <property name="businessEventsLabel"/>
+                    <property name="comparator"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="exchange-pattern" value="one-way"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="moveToDirectory" value="src/test/resources/output"/>
+                    <property name="address"/>
+                    <property name="fileAge"/>
+                    <property name="path" value="src/test/resources/input"/>
+                    <property name="encoding"/>
+                    <property name="outputPattern"/>
+                    <property name="auxiliary;index" value="6"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout" value="10000"/>
+                    <property name="connector-ref"/>
+                </properties>
+            </endpoint>
+            <pattern name="DataMapper" type="http://www.mulesoft.org/schema/mule/ee/data-mapper/data-mapper-connector" entity-id="DataMapper#2">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="stream"/>
+                    <property name="input-ref"/>
+                    <property name="target"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/ee/data-mapper/transform"/>
+                    <property name="pipeSize"/>
+                    <property name="config-ref" value="datamapper_grf"/>
+                    <property name="auxiliary;index" value="7"/>
+                </properties>
+            </pattern>
+            <pattern name="Salesforce" type="http://www.mulesoft.org/schema/mule/sfdc/sfdc-connector" entity-id="Salesforce#3">
+                <graphicalData x="0" y="0" width="0" height="0"/>
+                <properties>
+                    <property name="proxyUsername"/>
+                    <property name="securityToken"/>
+                    <property name="proxyHost"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/sfdc/create"/>
+                    <property name="proxyPort"/>
+                    <property name="type" value="Contact"/>
+                    <property name="password"/>
+                    <property name="url"/>
+                    <property name="username"/>
+                    <property name="sessionId"/>
+                    <property name="serviceEndpoint"/>
+                    <property name="accessTokenId"/>
+                    <property name="config-ref" value="Salesforce1"/>
+                    <property name="auxiliary;index" value="8"/>
+                    <property name="proxyPassword"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/sfdc/create-objectss;0">
+                        <property name="ref" value="#[payload]"/>
+                        <property name="auxiliary;index" value="9"/>
+                        <property name="auxiliary;wrapIn" value="9"/>
+                    </property-collection>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+</mule-configuration>
